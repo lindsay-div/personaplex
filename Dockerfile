@@ -1,5 +1,5 @@
 ARG BASE_IMAGE="nvcr.io/nvidia/cuda"
-ARG BASE_IMAGE_TAG="12.4.1-runtime-ubuntu22.04"
+ARG BASE_IMAGE_TAG="13.0.1-runtime-ubuntu24.04"
 
 FROM ${BASE_IMAGE}:${BASE_IMAGE_TAG} AS base
 
@@ -16,10 +16,12 @@ WORKDIR /app/moshi/
 COPY moshi/ /app/moshi/
 RUN uv venv /app/moshi/.venv --python 3.12
 RUN uv sync
+RUN uv pip install 'torch==2.9.*' 'torchvision==0.24.*' 'torchaudio==2.9.*' --index-url https://download.pytorch.org/whl/cu130
+RUN uv pip install accelerate
 
 RUN mkdir -p /app/ssl
 
 EXPOSE 8998
 
 ENTRYPOINT []
-CMD ["/app/moshi/.venv/bin/python", "-m", "moshi.server", "--ssl", "/app/ssl"]
+CMD ["/app/moshi/.venv/bin/python", "-m", "moshi.server", "--ssl", "/app/ssl", "--fp8"]
