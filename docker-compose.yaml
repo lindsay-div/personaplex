@@ -16,5 +16,6 @@ services:
             - driver: nvidia
               count: 1
               capabilities: [ gpu ]
+    cpuset: "5-9,15-19"
     volumes:
       - ./.cache:/root/.cache
